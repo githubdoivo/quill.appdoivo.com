@@ -21,7 +21,7 @@
     --field: #2b2228; --field-edge: #45373f; --heading: #f0cfe0;
     --m1: #4b5b77; --m2: #62547e; --m3: #6e5c30; --m4: #4f6b45; --m5: #8a4d43; --mood-ink: #f2e6ea; --mood-line: #f2e6ea;
     --mi-lo: #f2e6ea; --mi-hi: #24151e;
-    --bg-image: radial-gradient(80% 60% at 0% 10%, #2b2026, transparent 70%), radial-gradient(70% 60% at 100% 90%, #2a1f25, transparent 70%);
+    --bg-image: url(img/paper-flowers-night.webp);
   }
 }
 :root[data-theme="dark"] {
@@ -31,7 +31,7 @@
   --field: #2b2228; --field-edge: #45373f; --heading: #f0cfe0;
   --m1: #4b5b77; --m2: #62547e; --m3: #6e5c30; --m4: #4f6b45; --m5: #8a4d43; --mood-ink: #f2e6ea; --mood-line: #f2e6ea;
   --mi-lo: #f2e6ea; --mi-hi: #24151e;
-  --bg-image: radial-gradient(80% 60% at 0% 10%, #2b2026, transparent 70%), radial-gradient(70% 60% at 100% 90%, #2a1f25, transparent 70%);
+  --bg-image: url(img/paper-flowers-night.webp);
 }
 
 .bg { background-color: var(--paper); background-image: var(--bg-image); background-position: center; background-size: cover; background-repeat: no-repeat; }
