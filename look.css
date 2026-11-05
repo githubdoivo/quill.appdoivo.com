@@ -152,3 +152,28 @@ input, textarea, [contenteditable="true"], .entry p, .memory p, .tags li, .block
 .top, .top a, .top svg, img { -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; }
 .top { touch-action: manipulation; }
 .composer .actions-row .cam { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* books: personalised covers, papers and photo frames (2026-11-05) */
+.book { --cv: #6d2e56; }
+.cover-plum { --cv: #6d2e56; } .cover-rose { --cv: #b5546b; } .cover-sage { --cv: #5f7a55; } .cover-sky { --cv: #4f6f8f; } .cover-sand { --cv: #a8834f; } .cover-ink { --cv: #2c2a3a; }
+.book .page-title { border-bottom: 3px solid var(--cv); }
+.book-tile { border-top: 6px solid var(--cv, var(--accent)); }
+.personalise { margin: 4px 0 12px; } .personalise summary { cursor: pointer; font: 600 .95rem var(--font-head); color: var(--heading); min-height: 44px; display: inline-flex; align-items: center; }
+.pz-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0; } .pz-label { min-width: 64px; color: var(--ink-2); font-size: .9rem; }
+.pz { min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--card-edge); background: var(--card); color: var(--ink); cursor: pointer; font-size: .88rem; }
+.pz[class*="cover-"] { width: 34px; min-height: 34px; padding: 0; background: var(--cv); border: 2px solid var(--card); box-shadow: 0 0 0 1px var(--card-edge); }
+.pz[aria-checked="true"] { box-shadow: 0 0 0 2px var(--heading); } .pz:not([class*="cover-"])[aria-checked="true"] { background: var(--accent-soft); }
+.book .book-page { --line: 1.9rem; }
+.paper-lined .book-page textarea { line-height: var(--line); background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--line) - 1px), var(--rule) calc(var(--line) - 1px), var(--rule) var(--line)); background-attachment: local; }
+.paper-dotted .book-page { background-image: radial-gradient(color-mix(in srgb, var(--ink) 18%, transparent) 1px, transparent 1.2px); background-size: 18px 18px; }
+.paper-kraft .book-page { background-color: #d9bf98; color: #2b2118; } .paper-kraft .book-page textarea, .paper-kraft .book-page input { background: rgba(255, 250, 240, .35); color: #2b2118; }
+.frame-polaroid .ph img { background: #fffdf8; padding: 10px 10px 34px; box-shadow: 0 8px 20px -10px rgba(40, 20, 20, .45); border-radius: 2px; transform: rotate(-1.2deg); }
+.frame-tape .ph { position: relative; } .frame-tape .ph img { border-radius: 2px; box-shadow: 0 6px 16px -10px rgba(40, 20, 20, .4); }
+.frame-tape .ph::before, .frame-tape .ph::after { content: ""; position: absolute; width: 80px; height: 22px; background: color-mix(in srgb, var(--cv) 35%, #f6e6c8); opacity: .85; z-index: 1; top: -8px; }
+.frame-tape .ph::before { left: 10%; transform: rotate(-8deg); } .frame-tape .ph::after { right: 10%; transform: rotate(7deg); }
+.frame-rounded .ph img { border-radius: 22px; } .frame-none .ph img { border-radius: 4px; box-shadow: none; }
+/* icons in the calm pressed-flower style: thin plum lines, softer when idle (2026-11-05) */
+.nav button svg { stroke-width: 1.35; color: var(--heading); opacity: .85; }
+.nav button[aria-current="page"] svg { color: var(--accent-ink); opacity: 1; }
+.brand-mark { stroke-width: 1.35; }
+.book .book-page { border-left-color: var(--cv) !important; }

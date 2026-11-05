@@ -41,7 +41,9 @@ export function parseTags(s) {
 export const newEntry = (o = {}) => ({ id: o.id || uid(), type: "entry", at: isStamp(o.at) ? o.at : localStamp(), mood: isMood(o.mood ?? null) ? o.mood ?? null : null, text: clip(o.text, LIMITS.text), photos: (o.photos || []).slice(0, LIMITS.photos), tags: parseTags((o.tags || []).join(",")), updated: Date.now() });
 export const newPage = (o = {}) => ({ id: o.id || uid(), type: "page", title: clip(o.title, LIMITS.title), pinned: !!o.pinned, blocks: (o.blocks || [newBlock("text")]).slice(0, LIMITS.blocks), updated: Date.now() });
 export const newBoard = (o = {}) => ({ id: o.id || uid(), type: "board", title: clip(o.title, LIMITS.title), items: (o.items || []).slice(0, LIMITS.boardItems), updated: Date.now() });
-export const newBook = (o = {}) => ({ id: o.id || uid(), type: "book", kind: o.kind === "burn" ? "burn" : "album", title: clip(o.title, LIMITS.title), pages: (o.pages || []).slice(0, LIMITS.pages), updated: Date.now() });
+// how a book looks (all optional): cover colour, paper and, for albums, how photos are framed
+export const BOOK_COVERS = ["plum", "rose", "sage", "sky", "sand", "ink"], BOOK_PAPERS = ["plain", "lined", "dotted", "kraft"], BOOK_FRAMES = ["polaroid", "tape", "rounded", "none"];
+export const newBook = (o = {}) => ({ id: o.id || uid(), type: "book", kind: o.kind === "burn" ? "burn" : "album", title: clip(o.title, LIMITS.title), pages: (o.pages || []).slice(0, LIMITS.pages), cover: BOOK_COVERS.includes(o.cover) ? o.cover : (o.kind === "burn" ? "ink" : "plum"), paper: BOOK_PAPERS.includes(o.paper) ? o.paper : "plain", frame: BOOK_FRAMES.includes(o.frame) ? o.frame : "polaroid", updated: Date.now() });
 
 /* ---------- page blocks ---------- */
 export const BLOCK_KINDS = ["text", "h", "todo", "quote", "table", "image", "divider"];

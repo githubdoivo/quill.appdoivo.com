@@ -345,7 +345,7 @@ function viewBooks() {
   const books = byType("book").sort((a, b) => b.updated - a.updated);
   const mk = (kind) => () => { const b = M.newBook({ kind, title: "", pages: [{ id: M.uid(), file: null, title: "", text: "" }] }); save(b, { now: true }); S.bookPage = 0; S.bookMode = "read"; go(`#books/${b.id}`); };
   return h("div", {}, head(t("booksTitle"), h("button", { type: "button", class: "primary", text: t("newAlbum"), onclick: mk("album") }), h("button", { type: "button", class: "ghost", text: t("newBurn"), onclick: mk("burn") })),
-    books.length ? h("ul", { class: "tiles" }, ...books.map((b) => { const cover = b.pages.find((p) => p.file); return h("li", {}, h("a", { class: "tile", href: `#books/${b.id}`, onclick: () => { S.bookPage = 0; S.bookMode = "read"; } }, cover ? img(cover.file, "") : null, h("span", { class: "kind", text: b.kind === "burn" ? t("burn") : t("album") }), h("strong", { text: b.title || t("untitled") }), h("span", { text: t("pageOf", b.pages.length, b.pages.length).replace(/^\D+\d+\D+/, "") + " " + (S.settings.lang === "pt" ? "páginas" : "pages") }))); }))
+    books.length ? h("ul", { class: "tiles" }, ...books.map((b) => { const cover = b.pages.find((p) => p.file); return h("li", {}, h("a", { class: `tile book-tile cover-${b.cover || (b.kind === "burn" ? "ink" : "plum")}`, href: `#books/${b.id}`, onclick: () => { S.bookPage = 0; S.bookMode = "read"; } }, cover ? img(cover.file, "") : null, h("span", { class: "kind", text: b.kind === "burn" ? t("burn") : t("album") }), h("strong", { text: b.title || t("untitled") }), h("span", { text: t("pageOf", b.pages.length, b.pages.length).replace(/^\D+\d+\D+/, "") + " " + (S.settings.lang === "pt" ? "páginas" : "pages") }))); }))
       : h("p", { class: "muted", text: t("noBooks") }));
 }
 function viewBook() {
@@ -366,13 +366,22 @@ function viewBook() {
     h("button", { type: "button", class: "ghost", text: `${t("nextPage")} ›`, disabled: S.bookPage >= b.pages.length - 1, onclick: () => { S.bookPage++; render(); } }),
     h("button", { type: "button", class: "primary", text: t("addPage"), onclick: () => { if (b.pages.length >= M.LIMITS.pages) return; b.pages.splice(S.bookPage + 1, 0, { id: M.uid(), file: null, title: "", text: "" }); S.bookPage++; save(b); render(); } }));
   const grid = h("ul", { class: "book-grid" }, ...b.pages.map((p, i) => h("li", {}, h("button", { type: "button", onclick: () => { S.bookPage = i; S.bookMode = "read"; render(); } }, p.file ? img(p.file, "") : h("span", { class: "blank" }), h("span", { text: p.title || t("pageOf", i + 1, b.pages.length) })))));
-  return h("div", { class: b.kind === "burn" ? "burn" : "" },
+  // personalise: cover colour, paper and photo frames, saved with the book
+  const choice = (key, list, label, names) => h("div", { class: "pz-row", role: "radiogroup", "aria-label": label }, h("span", { class: "pz-label", text: label }),
+    ...list.map((v) => h("button", { type: "button", role: "radio", class: `pz ${key}-${v}`, "aria-checked": String((b[key] || list[0]) === v), "aria-label": names[v], title: names[v], onclick: () => { b[key] = v; save(b); render(); } }, key === "cover" ? null : h("span", { text: names[v] }))));
+  const W = S.settings.lang === "pt";
+  const personalise = h("details", { class: "personalise", open: !!S.pzOpen, ontoggle: (e) => { S.pzOpen = e.target.open; } }, h("summary", { text: W ? "Personalizar" : "Personalise" }),
+    choice("cover", M.BOOK_COVERS, W ? "Capa" : "Cover", W ? { plum: "Ameixa", rose: "Rosa", sage: "Salva", sky: "Céu", sand: "Areia", ink: "Tinta" } : { plum: "Plum", rose: "Rose", sage: "Sage", sky: "Sky", sand: "Sand", ink: "Ink" }),
+    choice("paper", M.BOOK_PAPERS, W ? "Papel" : "Paper", W ? { plain: "Liso", lined: "Pautado", dotted: "Pontilhado", kraft: "Kraft" } : { plain: "Plain", lined: "Lined", dotted: "Dotted", kraft: "Kraft" }),
+    b.kind === "burn" ? null : choice("frame", M.BOOK_FRAMES, W ? "Fotos" : "Photos", W ? { polaroid: "Polaroid", tape: "Fita", rounded: "Redondas", none: "Simples" } : { polaroid: "Polaroid", tape: "Washi Tape", rounded: "Rounded", none: "Plain" }));
+  return h("div", { class: `${b.kind === "burn" ? "burn " : ""}book cover-${b.cover || (b.kind === "burn" ? "ink" : "plum")} paper-${b.paper || "plain"} frame-${b.frame || "polaroid"}` },
     h("div", { class: "view-head" }, backBtn("#books"), h("span", { class: "spacer" }),
       h("div", { class: "seg", role: "radiogroup", "aria-label": t("bookTitle") },
         h("button", { type: "button", role: "radio", "aria-checked": String(S.bookMode === "read"), text: t("read"), onclick: () => { S.bookMode = "read"; render(); } }),
         h("button", { type: "button", role: "radio", "aria-checked": String(S.bookMode === "grid"), text: t("grid"), onclick: () => { S.bookMode = "grid"; render(); } })),
       h("button", { type: "button", class: "ghost small", text: t("delete"), onclick: async () => { await remove(b); go("#books"); } })),
     h("input", { class: "page-title", value: b.title, placeholder: b.kind === "burn" ? t("burn") : t("album"), "aria-label": t("bookTitle"), maxlength: String(M.LIMITS.title), oninput: (e) => { b.title = e.target.value; save(b); } }),
+    personalise,
     S.bookMode === "grid" ? grid : h("div", { class: "book-view" }, pageEl, nav));
 }
 
