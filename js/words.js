@@ -1,0 +1,53 @@
+// Every word on screen, EN and PT. Headings, buttons and labels in Title Case in BOTH
+// languages. PT: European Portuguese, impersonal (never "tu"), gender-neutral.
+export const WORDS = {
+  en: {
+    brand: "Journal", tagline: "A Quiet Place for Your Mind",
+    navToday: "Today", navPages: "Pages", navBoards: "Boards", navBooks: "Books", navSearch: "Search", navSettings: "Settings",
+    howAreYou: "How Are You?", moods: ["Awful", "Low", "Okay", "Good", "Great"], noMood: "No Mood",
+    write: "What's on your mind?", tags: "Tags", tagsHint: "#walk, #family", addPhotos: "Add Photos", save: "Save", saved: "Saved.", when: "When",
+    entriesTitle: "Diary", noEntries: "Nothing written yet. Start with how you feel.", streak: (n) => `${n} day${n === 1 ? "" : "s"} in a row`,
+    onThisDay: "On This Day", calendar: "Mood Calendar", prevMonth: "Previous Month", nextMonth: "Next Month", average: (v) => `Average mood ${v} of 5`, entries: (n) => `${n} entr${n === 1 ? "y" : "ies"}`,
+    edit: "Edit", delete: "Delete", cancel: "Cancel", close: "Close", undo: "Undo", deleted: "Deleted.", open: "Open", back: "Back",
+    pagesTitle: "Pages", newPage: "New Page", untitled: "Untitled", pageTitle: "Page Title", pin: "Pin", unpin: "Unpin", noPages: "Notes that are not about a date: ideas, lists, recipes, plans.",
+    addBlock: "Add Block", blockText: "Text", blockH: "Heading", blockTodo: "To-Do", blockQuote: "Quote", blockTable: "Table", blockImage: "Image", blockDivider: "Divider",
+    moveUp: "Move Up", moveDown: "Move Down", removeBlock: "Remove Block", addRow: "Add Row", addCol: "Add Column", delRow: "Remove Row", delCol: "Remove Column", caption: "Caption", blockHint: "Type, or start with # for a heading, [] for a to-do, > for a quote",
+    boardsTitle: "Boards", newBoard: "New Board", boardTitle: "Board Title", noBoards: "Free space for notes, images and moodboards. Place anything anywhere.", addNote: "Add Note", addImage: "Add Image", color: "Colour", bringFront: "Bring to Front", boardHelp: "Drag to move, drag the corner to resize. With an item selected, arrow keys move it.",
+    colors: { paper: "Paper", sun: "Sun", sage: "Sage", sky: "Sky", rose: "Rose" }, noteText: "Note",
+    booksTitle: "Books", newAlbum: "New Photo Album", newBurn: "New Burn Book", album: "Photo Album", burn: "Burn Book", noBooks: "Photo albums, and burn books: a page for each person, with a photo and everything you'd never say out loud.",
+    bookTitle: "Book Title", addPage: "Add Page", pageOf: (a, b) => `Page ${a} of ${b}`, prevPage: "Previous Page", nextPage: "Next Page", pageName: "Title", pageWords: "Words", photo: "Photo", grid: "All Pages", read: "Read",
+    searchTitle: "Search Everything", searchHint: "Words, Tags, Titles", allKinds: "Everything", kindEntry: "Diary", kindPage: "Pages", kindBoard: "Boards", kindBook: "Books", found: (n) => `${n} found`,
+    settingsTitle: "Settings", data: "Your Data", dataNote: "Everything stays on this device, photos included. Nothing is sent anywhere. Download a backup now and then, so a lost phone never means a lost journal.",
+    backup: "Download Backup", restore: "Restore Backup", wipe: "Delete Everything", restoreReplace: "Restoring replaces everything on this device. Continue?", wipeConfirm: "Delete every entry, page, board, book and photo on this device? This cannot be undone.", wipeType: "Type DELETE to confirm",
+    errBackup: "That is not a backup from this app.", errImage: "That file is not a photo this app can read.", errBig: "That file is too big.", storageWarn: "This browser may clear saved data when space is low. Install the app or download a backup.",
+    preferences: "Preferences", language: "Language", theme: "Theme", themeAuto: "Automatic", themeLight: "Light", themeDark: "Dark", privacy: "Privacy", usage: (n, f, mb) => `${n} items, ${f} photos, about ${mb} MB on this device`,
+    skip: "Skip to Content", langSwitch: "PT", langLabel: "PT · Ver em português", themeToggle: "Switch Theme", confirm: "OK",
+  },
+  pt: {
+    brand: "Diário", tagline: "Um Lugar Calmo para a Mente",
+    navToday: "Hoje", navPages: "Páginas", navBoards: "Quadros", navBooks: "Livros", navSearch: "Pesquisar", navSettings: "Definições",
+    howAreYou: "Como Está?", moods: ["Péssimo", "Em Baixo", "Assim-Assim", "Bem", "Ótimo"], noMood: "Sem Humor",
+    write: "O que vai na mente?", tags: "Etiquetas", tagsHint: "#passeio, #família", addPhotos: "Adicionar Fotos", save: "Guardar", saved: "Guardado.", when: "Quando",
+    entriesTitle: "Registos", noEntries: "Ainda nada escrito. Comece por como se sente.", streak: (n) => `${n} dia${n === 1 ? "" : "s"} seguido${n === 1 ? "" : "s"}`,
+    onThisDay: "Neste Dia", calendar: "Calendário de Humor", prevMonth: "Mês Anterior", nextMonth: "Mês Seguinte", average: (v) => `Humor médio ${v} em 5`, entries: (n) => `${n} registo${n === 1 ? "" : "s"}`,
+    edit: "Editar", delete: "Apagar", cancel: "Cancelar", close: "Fechar", undo: "Desfazer", deleted: "Apagado.", open: "Abrir", back: "Voltar",
+    pagesTitle: "Páginas", newPage: "Nova Página", untitled: "Sem Título", pageTitle: "Título da Página", pin: "Fixar", unpin: "Desafixar", noPages: "Notas que não são sobre uma data: ideias, listas, receitas, planos.",
+    addBlock: "Adicionar Bloco", blockText: "Texto", blockH: "Título", blockTodo: "Tarefa", blockQuote: "Citação", blockTable: "Tabela", blockImage: "Imagem", blockDivider: "Divisória",
+    moveUp: "Subir", moveDown: "Descer", removeBlock: "Remover Bloco", addRow: "Adicionar Linha", addCol: "Adicionar Coluna", delRow: "Remover Linha", delCol: "Remover Coluna", caption: "Legenda", blockHint: "Escreva, ou comece com # para um título, [] para uma tarefa, > para uma citação",
+    boardsTitle: "Quadros", newBoard: "Novo Quadro", boardTitle: "Título do Quadro", noBoards: "Espaço livre para notas, imagens e moodboards. Tudo pode ir para qualquer lado.", addNote: "Adicionar Nota", addImage: "Adicionar Imagem", color: "Cor", bringFront: "Trazer para a Frente", boardHelp: "Arraste para mover e arraste o canto para mudar o tamanho. Com um elemento escolhido, as setas movem-no.",
+    colors: { paper: "Papel", sun: "Sol", sage: "Salva", sky: "Céu", rose: "Rosa" }, noteText: "Nota",
+    booksTitle: "Livros", newAlbum: "Novo Álbum de Fotos", newBurn: "Novo Burn Book", album: "Álbum de Fotos", burn: "Burn Book", noBooks: "Álbuns de fotos, e burn books: uma página para cada pessoa, com uma foto e tudo o que nunca se diria em voz alta.",
+    bookTitle: "Título do Livro", addPage: "Adicionar Página", pageOf: (a, b) => `Página ${a} de ${b}`, prevPage: "Página Anterior", nextPage: "Página Seguinte", pageName: "Título", pageWords: "Palavras", photo: "Foto", grid: "Todas as Páginas", read: "Ler",
+    searchTitle: "Pesquisar Tudo", searchHint: "Palavras, Etiquetas, Títulos", allKinds: "Tudo", kindEntry: "Registos", kindPage: "Páginas", kindBoard: "Quadros", kindBook: "Livros", found: (n) => `${n} encontrado${n === 1 ? "" : "s"}`,
+    settingsTitle: "Definições", data: "Os Seus Dados", dataNote: "Tudo fica neste dispositivo, fotos incluídas. Nada é enviado para lado nenhum. Descarregue uma cópia de vez em quando, para que um telemóvel perdido nunca signifique um diário perdido.",
+    backup: "Descarregar Cópia", restore: "Restaurar Cópia", wipe: "Apagar Tudo", restoreReplace: "Restaurar substitui tudo neste dispositivo. Continuar?", wipeConfirm: "Apagar todos os registos, páginas, quadros, livros e fotos deste dispositivo? Não é possível desfazer.", wipeType: "Escreva APAGAR para confirmar",
+    errBackup: "Isso não é uma cópia desta app.", errImage: "Esse ficheiro não é uma foto que esta app consiga ler.", errBig: "Esse ficheiro é demasiado grande.", storageWarn: "Este navegador pode apagar os dados guardados quando falta espaço. Instale a app ou descarregue uma cópia.",
+    preferences: "Preferências", language: "Idioma", theme: "Tema", themeAuto: "Automático", themeLight: "Claro", themeDark: "Escuro", privacy: "Privacidade", usage: (n, f, mb) => `${n} elementos, ${f} fotos, cerca de ${mb} MB neste dispositivo`,
+    skip: "Saltar para o Conteúdo", langSwitch: "EN", langLabel: "EN · View in English", themeToggle: "Mudar Tema", confirm: "OK",
+  },
+};
+export const MONTHS = {
+  en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  pt: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+};
+export const WEEKDAYS = { en: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], pt: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"] };
