@@ -117,9 +117,10 @@ const MOOD_ICON = { // small line symbols, one per mood (storm, cloud, cloud and
   2: "M7 17a4 4 0 1 1 1-7.9A5 5 0 0 1 17.5 11 3.5 3.5 0 0 1 17 18H7",
   3: "M9 6.5V5M5.5 9H4M6.4 6.4 5.3 5.3M8 17a3.5 3.5 0 1 1 .8-6.9A4.5 4.5 0 0 1 17 11.5 3 3 0 0 1 16.5 17.5H8M12 9a3 3 0 0 0-5 2",
   4: "M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4",
-  5: "M12 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4M12 10c-1.5-3-1.5-5 0-6.5 1.5 1.5 1.5 3.5 0 6.5M14 12c3-1.5 5-1.5 6.5 0-1.5 1.5-3.5 1.5-6.5 0M12 14c1.5 3 1.5 5 0 6.5-1.5-1.5-1.5-3.5 0-6.5M10 12c-3 1.5-5 1.5-6.5 0 1.5-1.5 3.5-1.5 6.5 0",
+  5: "M12 3.5l2.4 5 5.4.7-4 3.7 1 5.4L12 15.7l-4.8 2.6 1-5.4-4-3.7 5.4-.7Z",
 };
 const moodIcon = (m) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true"); const p = document.createElementNS("http://www.w3.org/2000/svg", "path"); p.setAttribute("d", MOOD_ICON[m]); s.append(p); return s; };
+const camIcon = () => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("class", "cam"); s.setAttribute("aria-hidden", "true"); const p = document.createElementNS("http://www.w3.org/2000/svg", "path"); p.setAttribute("d", "M4 8h3l1.5-2h7L17 8h3v11H4ZM12 11a3 3 0 1 0 0 6 3 3 0 0 0 0-6"); s.append(p); return s; };
 const tagChips = (tags) => h("ul", { class: "tags" }, ...tags.map((x) => h("li", { text: x })));
 /* ---------- today: write, diary, calendar ---------- */
 function viewToday() {
@@ -146,7 +147,7 @@ function viewToday() {
       h("label", { class: "f f-when" }, h("span", { text: t("when") }), h("input", { type: "datetime-local", name: "at", value: d.at, onchange: (e) => { if (M.isStamp(e.target.value)) d.at = e.target.value; } }))),
     preview,
     h("div", { class: "actions-row" },
-      h("button", { type: "button", class: "ghost small", onclick: async () => { const ids = await savePhotos(await pickFiles({ multiple: true })); d.photos.push(...ids.slice(0, M.LIMITS.photos - d.photos.length)); drawThumbs(); } }, h("span", { "aria-hidden": "true", text: "📷" }), h("span", { text: t("addPhotos") })),
+      h("button", { type: "button", class: "ghost small", onclick: async () => { const ids = await savePhotos(await pickFiles({ multiple: true })); d.photos.push(...ids.slice(0, M.LIMITS.photos - d.photos.length)); drawThumbs(); } }, camIcon(), h("span", { text: t("addPhotos") })),
       h("span", { class: "spacer" }),
       d.id ? h("button", { type: "button", class: "ghost small", text: t("cancel"), onclick: () => { S.draft = null; render(); } }) : null,
       h("button", { type: "submit", class: "primary", text: t("save") })),

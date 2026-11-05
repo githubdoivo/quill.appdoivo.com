@@ -6,9 +6,9 @@
   --ink: #2c2228; --ink-2: #5e4c55; --ink-3: #6f5c66; --rule: #e4d0c0;
   --accent: #6d2e56; --accent-ink: #ffffff; --accent-soft: #f1dfe2;
   --field: #f2e2da; --field-edge: #dcc4bb; --heading: #5a2349;
-  --m1: #b9c3d6; --m2: #cfc0e0; --m3: #ecd8a6; --m4: #c3d6b2; --m5: #f0b9ab; --mood-ink: #2c2228; --mood-line: #4a3a44;
+  --m1: #ecdccd; --m2: #dfb7a8; --m3: #cb9c99; --m4: #a8748d; --m5: #6d2e56; --mood-ink: #2c2228; --mood-line: #5a2349;
   --mi-lo: #2c2228; --mi-hi: #ffffff;
-  --bg-image: url(img/paper-flowers.webp);
+  --bg-image: url(img/paper-flowers.webp); --bg-phone: url(img/paper-flowers-phone.webp);
   --font-head: ui-serif, "New York", "Iowan Old Style", Charter, Georgia, serif;
   --radius: 18px; --radius-s: 12px;
   --shadow: 0 1px 2px rgba(90, 50, 60, .05), 0 12px 30px -20px rgba(90, 50, 60, .3);
@@ -19,9 +19,9 @@
     --ink: #f2e6ea; --ink-2: #cdbbc4; --ink-3: #b19fa9; --rule: #3c3037;
     --accent: #e0a9c9; --accent-ink: #24151e; --accent-soft: #3d2834;
     --field: #2b2228; --field-edge: #45373f; --heading: #f0cfe0;
-    --m1: #4b5b77; --m2: #62547e; --m3: #6e5c30; --m4: #4f6b45; --m5: #8a4d43; --mood-ink: #f2e6ea; --mood-line: #f2e6ea;
+    --m1: #3a2f35; --m2: #5c4250; --m3: #84576d; --m4: #b47c9b; --m5: #e0a9c9; --mood-ink: #f2e6ea; --mood-line: #f0cfe0;
     --mi-lo: #f2e6ea; --mi-hi: #24151e;
-    --bg-image: url(img/paper-flowers-night.webp);
+    --bg-image: url(img/paper-flowers-night.webp); --bg-phone: url(img/paper-flowers-phone-night.webp);
   }
 }
 :root[data-theme="dark"] {
@@ -29,9 +29,9 @@
   --ink: #f2e6ea; --ink-2: #cdbbc4; --ink-3: #b19fa9; --rule: #3c3037;
   --accent: #e0a9c9; --accent-ink: #24151e; --accent-soft: #3d2834;
   --field: #2b2228; --field-edge: #45373f; --heading: #f0cfe0;
-  --m1: #4b5b77; --m2: #62547e; --m3: #6e5c30; --m4: #4f6b45; --m5: #8a4d43; --mood-ink: #f2e6ea; --mood-line: #f2e6ea;
+  --m1: #3a2f35; --m2: #5c4250; --m3: #84576d; --m4: #b47c9b; --m5: #e0a9c9; --mood-ink: #f2e6ea; --mood-line: #f0cfe0;
   --mi-lo: #f2e6ea; --mi-hi: #24151e;
-  --bg-image: url(img/paper-flowers-night.webp);
+  --bg-image: url(img/paper-flowers-night.webp); --bg-phone: url(img/paper-flowers-phone-night.webp);
 }
 
 .bg { background-color: var(--paper); background-image: var(--bg-image); background-position: center; background-size: cover; background-repeat: no-repeat; }
@@ -90,10 +90,13 @@ dialog { background: var(--card-solid); }
 
 /* moods: each its own calm colour with a small symbol (2026-11-05 feedback: too similar) */
 .mood i, .cal-legend i, .mood-tag i { display: inline-grid; place-items: center; border-radius: 50%; border: 0; }
-.mood i { width: 24px; height: 24px; }
-.mood i svg, .cal-legend i svg, .mood-tag i svg { width: 70%; height: 70%; fill: none; stroke: var(--mood-line); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.mood input:checked + span { background: color-mix(in srgb, var(--accent-soft) 70%, transparent); }
-.cal .d.m1, .cal .d.m2, .cal .d.m3, .cal .d.m4, .cal .d.m5 { color: var(--mood-ink); }
+/* the symbol says the mood (2026-11-05: one colour family, clearer symbols, stars for Great) */
+.mood i, .mood-tag i { background: transparent !important; border: 0; }
+.mood i { width: 26px; height: 26px; }
+.mood i svg, .mood-tag i svg { width: 100%; height: 100%; fill: none; stroke: var(--mood-line); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.cal-legend i svg { display: none; }
+.mood input:checked + span { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.mood input:checked + span i svg { stroke: var(--accent-ink); }
 .cal-legend i { width: 18px; height: 18px; }
 .mood-tag { display: inline-flex; align-items: center; gap: 6px; }
 .mood-tag i { width: 20px; height: 20px; }
@@ -134,16 +137,18 @@ input::-webkit-date-and-time-value { text-align: left; min-height: 1.45em; }
 body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 input, textarea, [contenteditable="true"], .entry p, .memory p, .tags li, .blocks, .bp p, .tile span { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
 
-/* phone: the pressed flowers in the corners (the picture's middle is plain paper) */
+/* phone: its own portrait picture, crisp to every edge (no fades: 2026-11-05 feedback) */
 @media (max-width: 640px) {
-  .bg { background-image: radial-gradient(120% 60% at 0% 0%, var(--paper-2), transparent 60%), radial-gradient(90% 50% at 100% 100%, var(--paper-2), transparent 60%); }
-  .bg::before, .bg::after { content: ""; position: absolute; inset: 0; background-image: var(--bg-image); background-repeat: no-repeat; background-size: auto 62lvh; pointer-events: none; }
-  .bg::before { background-position: left top; -webkit-mask-image: linear-gradient(100deg, #000 18%, transparent 46%); mask-image: linear-gradient(100deg, #000 18%, transparent 46%); top: calc(var(--above) - 2vh); }
-  .bg::after { background-position: right bottom; -webkit-mask-image: linear-gradient(280deg, #000 18%, transparent 46%); mask-image: linear-gradient(280deg, #000 18%, transparent 46%); bottom: var(--below); }
+  .bg { background-image: var(--bg-phone); background-size: cover; background-position: center top; }
   .composer .row .f { flex: 1 1 100%; }
   .composer .actions-row button.primary { padding: 0 22px; }
 }
 
 /* PT/EN: no bubble, same as the light/dark switch (consistent with Ledger) */
-.lang-btn { min-width: 44px; height: 44px; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--ink); font: 600 .95rem var(--font-head); letter-spacing: .04em; cursor: pointer; }
-.lang-btn:hover { background: var(--accent-soft); }
+/* theme and language: the same circle, light and dark (2026-11-05) */
+.lang-btn, #theme { width: 44px; min-width: 44px; height: 44px; border: 1px solid var(--card-edge); border-radius: 999px; background: var(--card); color: var(--ink); font: 600 .9rem var(--font-head); letter-spacing: .04em; cursor: pointer; display: inline-grid; place-items: center; padding: 0; }
+.lang-btn:hover, #theme:hover { background: var(--accent-soft); }
+/* nothing in the header can be dragged or pushed around */
+.top, .top a, .top svg, img { -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; }
+.top { touch-action: manipulation; }
+.composer .actions-row .cam { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
