@@ -1,6 +1,6 @@
-/* Journal, next look ("pressed flowers"), from the ChatGPT design of 2026-11-05.
-   Loaded only on the preview link (?look=next, see js/look.js), on top of app.css, so the
-   live look stays untouched until it is approved. To ship: link this file always. */
+/* Journal's look ("pressed flowers"), from the ChatGPT design of 2026-11-05, on top of
+   app.css: cream cotton paper with pressed flowers at the edges, plum ink. A next look can be
+   previewed the same way again (look-next.css + a ?look=next loader). */
 :root {
   --paper: #f3dcc2; --paper-2: #ead2bb; --card: rgba(250, 241, 231, .86); --card-solid: #f9efe4; --card-edge: #e8d5c2;
   --ink: #2c2228; --ink-2: #5e4c55; --ink-3: #6f5c66; --rule: #e4d0c0;
