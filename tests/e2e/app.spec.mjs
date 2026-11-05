@@ -32,11 +32,11 @@ test("diary: write with a mood and tags, see it on the calendar, edit it, delete
   await open(page);
   await page.locator(".mood", { hasText: "Great" }).click();
   await page.fill("#entry-text", "Swam in the sea.");
-  await page.fill('input[name="tags"]', "#sea, #Summer #sea");
+  await page.fill('input[name="tags"]', "sea, Summer, #sea");
   await page.click('form.composer button[type="submit"]');
   const entry = page.locator("article.entry").first();
   await expect(entry).toContainText("Swam in the sea."); await expect(entry).toContainText("Great");
-  await expect(entry.locator(".tags li")).toHaveText(["#sea", "#summer"]);
+  await expect(entry.locator(".tags li")).toHaveText(["sea", "summer"]);
   await expect(page.locator(".cal .d.today")).toHaveClass(/m5/);
   await expect(page.locator(".cal .d.today")).toHaveAttribute("aria-label", /1 entry, Great/);
   await expect(page.locator(".stat-line")).toContainText("1 day in a row");
@@ -139,7 +139,7 @@ test("boards: notes and images can be placed anywhere, resized, recoloured, move
   await page.keyboard.press("ArrowRight"); await page.keyboard.press("Shift+ArrowDown");
   const k1 = await note.boundingBox();
   expect(Math.round(k1.x - k0.x)).toBe(10); expect(Math.round(k1.y - k0.y)).toBe(50);
-  await page.getByRole("combobox", { name: "Colour" }).selectOption("sage");
+  await page.locator(".bi.selected").getByRole("radio", { name: "Sage" }).click(); // the colour is picked on the note itself
   await expect(page.locator(".bi").first()).toHaveClass(/sage/);
   const file = await photoWithGPS(page);
   await chooseFile(page, file, () => page.getByRole("button", { name: "Add Image" }).click());

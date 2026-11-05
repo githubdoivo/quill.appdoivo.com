@@ -6,7 +6,7 @@
   --ink: #2c2228; --ink-2: #5e4c55; --ink-3: #6f5c66; --rule: #e4d0c0;
   --accent: #6d2e56; --accent-ink: #ffffff; --accent-soft: #f1dfe2;
   --field: #f2e2da; --field-edge: #dcc4bb; --heading: #5a2349;
-  --m1: #ecdccd; --m2: #dfb7a8; --m3: #cb9c99; --m4: #a8748d; --m5: #6d2e56;
+  --m1: #b9c3d6; --m2: #cfc0e0; --m3: #ecd8a6; --m4: #c3d6b2; --m5: #f0b9ab; --mood-ink: #2c2228; --mood-line: #4a3a44;
   --mi-lo: #2c2228; --mi-hi: #ffffff;
   --bg-image: url(img/paper-flowers.webp);
   --font-head: ui-serif, "New York", "Iowan Old Style", Charter, Georgia, serif;
@@ -19,7 +19,7 @@
     --ink: #f2e6ea; --ink-2: #cdbbc4; --ink-3: #b19fa9; --rule: #3c3037;
     --accent: #e0a9c9; --accent-ink: #24151e; --accent-soft: #3d2834;
     --field: #2b2228; --field-edge: #45373f; --heading: #f0cfe0;
-    --m1: #3a2f35; --m2: #5c4250; --m3: #84576d; --m4: #b47c9b; --m5: #e0a9c9;
+    --m1: #4b5b77; --m2: #62547e; --m3: #6e5c30; --m4: #4f6b45; --m5: #8a4d43; --mood-ink: #f2e6ea; --mood-line: #f2e6ea;
     --mi-lo: #f2e6ea; --mi-hi: #24151e;
     --bg-image: radial-gradient(80% 60% at 0% 10%, #2b2026, transparent 70%), radial-gradient(70% 60% at 100% 90%, #2a1f25, transparent 70%);
   }
@@ -29,7 +29,7 @@
   --ink: #f2e6ea; --ink-2: #cdbbc4; --ink-3: #b19fa9; --rule: #3c3037;
   --accent: #e0a9c9; --accent-ink: #24151e; --accent-soft: #3d2834;
   --field: #2b2228; --field-edge: #45373f; --heading: #f0cfe0;
-  --m1: #3a2f35; --m2: #5c4250; --m3: #84576d; --m4: #b47c9b; --m5: #e0a9c9;
+  --m1: #4b5b77; --m2: #62547e; --m3: #6e5c30; --m4: #4f6b45; --m5: #8a4d43; --mood-ink: #f2e6ea; --mood-line: #f2e6ea;
   --mi-lo: #f2e6ea; --mi-hi: #24151e;
   --bg-image: radial-gradient(80% 60% at 0% 10%, #2b2026, transparent 70%), radial-gradient(70% 60% at 100% 90%, #2a1f25, transparent 70%);
 }
@@ -87,3 +87,63 @@ dialog { background: var(--card-solid); }
   .mood span { min-height: 44px; padding: 0 12px 0 8px; font-size: .9rem; gap: 6px; }
   .mood i { width: 16px; height: 16px; }
 }
+
+/* moods: each its own calm colour with a small symbol (2026-11-05 feedback: too similar) */
+.mood i, .cal-legend i, .mood-tag i { display: inline-grid; place-items: center; border-radius: 50%; border: 0; }
+.mood i { width: 24px; height: 24px; }
+.mood i svg, .cal-legend i svg, .mood-tag i svg { width: 70%; height: 70%; fill: none; stroke: var(--mood-line); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.mood input:checked + span { background: color-mix(in srgb, var(--accent-soft) 70%, transparent); }
+.cal .d.m1, .cal .d.m2, .cal .d.m3, .cal .d.m4, .cal .d.m5 { color: var(--mood-ink); }
+.cal-legend i { width: 18px; height: 18px; }
+.mood-tag { display: inline-flex; align-items: center; gap: 6px; }
+.mood-tag i { width: 20px; height: 20px; }
+
+/* writing: a ruled journal page, not a social-media box */
+.composer textarea { --line: 1.9rem; font-family: var(--font-head); font-size: 1.12rem; line-height: var(--line); padding: calc(var(--line) * .35) 16px 8px 46px; min-height: calc(var(--line) * 5 + 12px); border-radius: 6px; border: 1px solid var(--card-edge);
+  background-color: var(--card-solid); background-attachment: local;
+  background-image: linear-gradient(90deg, transparent 33px, color-mix(in srgb, var(--accent) 35%, transparent) 33px, color-mix(in srgb, var(--accent) 35%, transparent) 34px, transparent 34px),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--line) - 1px), var(--rule) calc(var(--line) - 1px), var(--rule) var(--line));
+  background-position: 0 calc(var(--line) * .35); box-shadow: inset 0 1px 3px rgba(60, 30, 40, .06); }
+.composer textarea::placeholder { font-style: italic; color: var(--ink-3); }
+
+/* tags: comma-separated, shown as small chips */
+.tags { display: flex; gap: 6px; flex-wrap: wrap; padding: 0; margin: 8px 0 0; list-style: none; }
+.tags li { font-size: .8rem; padding: 3px 10px 3px 8px; border-radius: 6px 999px 999px 6px; background: var(--accent-soft); color: var(--heading); border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); }
+.tags li::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--card-solid); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); margin-right: 6px; vertical-align: 1px; }
+.tag-preview:empty { display: none; }
+.composer .row { margin-top: 12px; }
+.composer .actions-row { display: flex; gap: 10px; align-items: center; margin-top: 14px; }
+.composer .actions-row .spacer { flex: 1; }
+.composer .actions-row button.primary { min-height: 44px; padding: 0 26px; font-size: 1rem; }
+.composer .actions-row button.small span[aria-hidden] { font-size: .95em; }
+
+/* iOS gives date fields their own width: keep them inside the card */
+input[type="datetime-local"], input[type="date"] { -webkit-appearance: none; appearance: none; display: block; width: 100%; min-width: 0; text-align: left; }
+input::-webkit-date-and-time-value { text-align: left; min-height: 1.45em; }
+
+/* sticky notes: pick the colour on the note itself */
+.bi .grip { display: flex; align-items: center; justify-content: flex-end; padding: 0 6px; height: 26px; }
+.bi .swatches { display: none; gap: 5px; }
+.bi.selected .swatches, .bi:focus-within .swatches, .bi:hover .swatches { display: inline-flex; }
+.bi .sw { width: 16px; height: 16px; padding: 0; border-radius: 50%; border: 1px solid rgba(0, 0, 0, .25); background: var(--note-paper); cursor: pointer; position: relative; }
+.bi .sw::after { content: ""; position: absolute; inset: -8px; } /* bigger tap area */
+.bi .sw.sun { background: var(--note-sun); } .bi .sw.sage { background: var(--note-sage); } .bi .sw.sky { background: var(--note-sky); } .bi .sw.rose { background: var(--note-rose); }
+.bi .sw[aria-checked="true"] { box-shadow: 0 0 0 2px var(--note-ink); }
+
+/* only what you wrote can be selected, not menus, buttons or labels */
+body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+input, textarea, [contenteditable="true"], .entry p, .memory p, .tags li, .blocks, .bp p, .tile span { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+
+/* phone: the pressed flowers in the corners (the picture's middle is plain paper) */
+@media (max-width: 640px) {
+  .bg { background-image: radial-gradient(120% 60% at 0% 0%, var(--paper-2), transparent 60%), radial-gradient(90% 50% at 100% 100%, var(--paper-2), transparent 60%); }
+  .bg::before, .bg::after { content: ""; position: absolute; inset: 0; background-image: var(--bg-image); background-repeat: no-repeat; background-size: auto 62lvh; pointer-events: none; }
+  .bg::before { background-position: left top; -webkit-mask-image: linear-gradient(100deg, #000 18%, transparent 46%); mask-image: linear-gradient(100deg, #000 18%, transparent 46%); top: calc(var(--above) - 2vh); }
+  .bg::after { background-position: right bottom; -webkit-mask-image: linear-gradient(280deg, #000 18%, transparent 46%); mask-image: linear-gradient(280deg, #000 18%, transparent 46%); bottom: var(--below); }
+  .composer .row .f { flex: 1 1 100%; }
+  .composer .actions-row button.primary { padding: 0 22px; }
+}
+
+/* PT/EN: no bubble, same as the light/dark switch (consistent with Ledger) */
+.lang-btn { min-width: 44px; height: 44px; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--ink); font: 600 .95rem var(--font-head); letter-spacing: .04em; cursor: pointer; }
+.lang-btn:hover { background: var(--accent-soft); }

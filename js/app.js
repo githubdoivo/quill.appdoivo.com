@@ -112,14 +112,24 @@ function render() {
 const head = (title, ...right) => h("div", { class: "view-head" }, h("h1", { text: title }), ...right);
 const backBtn = (hash) => h("button", { type: "button", class: "ghost small", text: `← ${t("back")}`, onclick: () => go(hash) });
 
+const MOOD_ICON = { // small line symbols, one per mood (storm, cloud, cloud and sun, sun, flower)
+  1: "M7 15a4 4 0 1 1 1-7.9A5 5 0 0 1 17.5 9 3.5 3.5 0 0 1 17 16H7M9 18l-1 2M13 18l-1 2M17 18l-1 2",
+  2: "M7 17a4 4 0 1 1 1-7.9A5 5 0 0 1 17.5 11 3.5 3.5 0 0 1 17 18H7",
+  3: "M9 6.5V5M5.5 9H4M6.4 6.4 5.3 5.3M8 17a3.5 3.5 0 1 1 .8-6.9A4.5 4.5 0 0 1 17 11.5 3 3 0 0 1 16.5 17.5H8M12 9a3 3 0 0 0-5 2",
+  4: "M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4",
+  5: "M12 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4M12 10c-1.5-3-1.5-5 0-6.5 1.5 1.5 1.5 3.5 0 6.5M14 12c3-1.5 5-1.5 6.5 0-1.5 1.5-3.5 1.5-6.5 0M12 14c1.5 3 1.5 5 0 6.5-1.5-1.5-1.5-3.5 0-6.5M10 12c-3 1.5-5 1.5-6.5 0 1.5-1.5 3.5-1.5 6.5 0",
+};
+const moodIcon = (m) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true"); const p = document.createElementNS("http://www.w3.org/2000/svg", "path"); p.setAttribute("d", MOOD_ICON[m]); s.append(p); return s; };
+const tagChips = (tags) => h("ul", { class: "tags" }, ...tags.map((x) => h("li", { text: x })));
 /* ---------- today: write, diary, calendar ---------- */
 function viewToday() {
   const d = S.draft || (S.draft = { id: null, mood: null, text: "", tags: "", at: M.localStamp(), photos: [] });
   const moodSet = h("fieldset", { class: "moods" }, h("legend", { text: t("howAreYou") }),
-    ...M.MOODS.map((m) => h("label", { class: "mood" }, h("input", { type: "radio", name: "mood", value: String(m), checked: d.mood === m, onchange: () => { d.mood = m; } }), h("span", {}, h("i", { class: `m${m}`, "aria-hidden": "true" }), t("moods")[m - 1]))),
+    ...M.MOODS.map((m) => h("label", { class: "mood" }, h("input", { type: "radio", name: "mood", value: String(m), checked: d.mood === m, onchange: () => { d.mood = m; } }), h("span", {}, h("i", { class: `m${m}`, "aria-hidden": "true" }, moodIcon(m)), t("moods")[m - 1]))),
     h("label", { class: "mood" }, h("input", { type: "radio", name: "mood", value: "", checked: d.mood === null, onchange: () => { d.mood = null; } }), h("span", { text: t("noMood") })));
   const text = h("textarea", { id: "entry-text", "data-auto": true, rows: "4", maxlength: String(M.LIMITS.text), placeholder: t("write"), "aria-label": t("write"), value: d.text, oninput: (e) => { d.text = e.target.value; autosize(e.target); } });
   const thumbs = h("ul", { class: "thumbs" });
+  const preview = tagChips(M.parseTags(d.tags)); preview.classList.add("tag-preview");
   const drawThumbs = () => thumbs.replaceChildren(...d.photos.map((id, i) => h("li", {}, img(id, ""), h("button", { type: "button", "aria-label": `${t("delete")} ${t("photo")} ${i + 1}`, text: "×", onclick: () => { d.photos.splice(i, 1); drawThumbs(); } }))));
   drawThumbs();
   const form = h("form", { class: "card composer", novalidate: true, autocomplete: "off", onsubmit: async (ev) => {
@@ -132,10 +142,13 @@ function viewToday() {
     S.draft = null; toast(t("saved")); render(); $("#entry-text")?.focus();
   } }, moodSet, text,
     h("div", { class: "row" },
-      h("label", { class: "f" }, h("span", { text: t("tags") }), h("input", { name: "tags", value: d.tags, placeholder: t("tagsHint"), maxlength: "200", oninput: (e) => { d.tags = e.target.value; } })),
-      h("label", { class: "f" }, h("span", { text: t("when") }), h("input", { type: "datetime-local", name: "at", value: d.at, onchange: (e) => { if (M.isStamp(e.target.value)) d.at = e.target.value; } })),
-      h("button", { type: "button", class: "ghost", text: t("addPhotos"), onclick: async () => { const ids = await savePhotos(await pickFiles({ multiple: true })); d.photos.push(...ids.slice(0, M.LIMITS.photos - d.photos.length)); drawThumbs(); } }),
-      d.id ? h("button", { type: "button", class: "ghost", text: t("cancel"), onclick: () => { S.draft = null; render(); } }) : null,
+      h("label", { class: "f f-tags" }, h("span", { text: t("tags") }), h("input", { name: "tags", value: d.tags, placeholder: t("tagsHint"), maxlength: "200", oninput: (e) => { d.tags = e.target.value; preview.replaceChildren(...tagChips(M.parseTags(d.tags)).childNodes); } })),
+      h("label", { class: "f f-when" }, h("span", { text: t("when") }), h("input", { type: "datetime-local", name: "at", value: d.at, onchange: (e) => { if (M.isStamp(e.target.value)) d.at = e.target.value; } }))),
+    preview,
+    h("div", { class: "actions-row" },
+      h("button", { type: "button", class: "ghost small", onclick: async () => { const ids = await savePhotos(await pickFiles({ multiple: true })); d.photos.push(...ids.slice(0, M.LIMITS.photos - d.photos.length)); drawThumbs(); } }, h("span", { "aria-hidden": "true", text: "📷" }), h("span", { text: t("addPhotos") })),
+      h("span", { class: "spacer" }),
+      d.id ? h("button", { type: "button", class: "ghost small", text: t("cancel"), onclick: () => { S.draft = null; render(); } }) : null,
       h("button", { type: "submit", class: "primary", text: t("save") })),
     thumbs);
 
@@ -154,12 +167,12 @@ function viewToday() {
 }
 function entryCard(e) {
   return h("article", { class: `entry ${e.mood ? "" : "no-mood"}`, style: null, "data-mood": e.mood ? String(e.mood) : null },
-    h("div", { class: "entry-head" }, h("strong", { text: e.at.slice(11) }), e.mood ? h("span", { text: t("moods")[e.mood - 1] }) : null),
+    h("div", { class: "entry-head" }, h("strong", { text: e.at.slice(11) }), e.mood ? h("span", { class: "mood-tag" }, h("i", { class: `m${e.mood}`, "aria-hidden": "true" }, moodIcon(e.mood)), t("moods")[e.mood - 1]) : null),
     e.text ? h("p", { text: e.text }) : null,
     e.photos.length ? h("div", { class: "photos" }, ...e.photos.map((id) => img(id, ""))) : null,
-    e.tags.length ? h("ul", { class: "tags" }, ...e.tags.map((x) => h("li", { text: `#${x}` }))) : null,
+    e.tags.length ? tagChips(e.tags) : null,
     h("div", { class: "entry-actions" },
-      h("button", { type: "button", class: "ghost small", text: t("edit"), onclick: () => { S.draft = { id: e.id, mood: e.mood, text: e.text, tags: e.tags.map((x) => "#" + x).join(" "), at: e.at, photos: [...e.photos] }; render(); window.scrollTo({ top: 0 }); $("#entry-text")?.focus(); } }),
+      h("button", { type: "button", class: "ghost small", text: t("edit"), onclick: () => { S.draft = { id: e.id, mood: e.mood, text: e.text, tags: e.tags.join(", "), at: e.at, photos: [...e.photos] }; render(); window.scrollTo({ top: 0 }); $("#entry-text")?.focus(); } }),
       h("button", { type: "button", class: "ghost small", text: t("delete"), onclick: async () => { await remove(e); render(); } })));
 }
 function calendarCard(entries) {
@@ -181,7 +194,7 @@ function calendarCard(entries) {
       h("h3", { "aria-live": "polite", text: `${MONTHS[S.settings.lang][mo - 1]} ${y}` }),
       h("button", { type: "button", class: "icon-btn", "aria-label": t("nextMonth"), text: "›", onclick: () => { S.calMonth = M.addMonths(m, 1); render(); } })),
     h("div", { class: "cal" }, ...cells),
-    h("ul", { class: "cal-legend", "aria-hidden": "true" }, ...M.MOODS.map((k) => h("li", {}, h("i", { class: `m${k}` }), t("moods")[k - 1]))),
+    h("ul", { class: "cal-legend", "aria-hidden": "true" }, ...M.MOODS.map((k) => h("li", {}, h("i", { class: `m${k}` }, moodIcon(k)), t("moods")[k - 1]))),
     h("p", { class: "stat-line", text: [st.average ? t("average", st.average.toFixed(1).replace(".", S.settings.lang === "pt" ? "," : ".")) : "", t("streak", M.streak(entries, today()))].filter(Boolean).join(" · ") }));
 }
 function memoriesCard(entries) {
@@ -270,8 +283,9 @@ function viewBoard() {
   const select = (it) => { S.selected = it?.id || null; for (const el of $$(".bi", board)) el.classList.toggle("selected", el.dataset.id === S.selected); tools(); };
   const itemEl = (it) => {
     const el = h("div", { class: `bi ${it.kind === "note" ? it.color : ""}`, "data-id": it.id, tabindex: "0", role: "group", "aria-label": it.kind === "note" ? `${t("noteText")}: ${it.text.slice(0, 40)}` : t("blockImage") });
-    const grip = h("div", { class: "grip", "aria-hidden": "true" });
+    const grip = h("div", { class: "grip" }); // drag handle; holds the note's colour dots, so not hidden from screen readers
     el.append(grip);
+    if (it.kind === "note") grip.append(h("span", { class: "swatches", role: "radiogroup", "aria-label": t("color") }, ...M.NOTE_COLORS.map((c) => h("button", { type: "button", class: `sw ${c}`, role: "radio", "aria-checked": String(it.color === c), "aria-label": t("colors")[c], title: t("colors")[c], onpointerdown: (e) => e.stopPropagation(), onclick: (e) => { e.stopPropagation(); it.color = c; save(bd); drawAll(); } }))));
     if (it.kind === "note") el.append(h("textarea", { value: it.text, "aria-label": t("noteText"), maxlength: String(M.LIMITS.block), oninput: (e) => { it.text = e.target.value; save(bd); } }));
     else el.append(img(it.file, ""));
     const handle = h("div", { class: "resize", "aria-hidden": "true" }); el.append(handle);
@@ -310,7 +324,6 @@ function viewBoard() {
   function tools() {
     const it = bd.items.find((i) => i.id === S.selected);
     selTools.replaceChildren(...(it ? [
-      it.kind === "note" ? h("label", { class: "f" }, h("span", { class: "sr", text: t("color") }), (() => { const s = h("select", { "aria-label": t("color"), onchange: (e) => { it.color = e.target.value; save(bd); drawAll(); } }, ...M.NOTE_COLORS.map((c) => h("option", { value: c, text: t("colors")[c] }))); s.value = it.color; return s; })()) : null,
       h("button", { type: "button", class: "ghost small", text: t("bringFront"), onclick: () => { it.z = M.topZ(bd.items); save(bd); drawAll(); } }),
       h("button", { type: "button", class: "ghost small", text: t("delete"), onclick: () => { bd.items = bd.items.filter((x) => x !== it); S.selected = null; save(bd); drawAll(); } }),
     ] : []));

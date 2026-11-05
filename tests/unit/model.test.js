@@ -13,9 +13,9 @@ test("time stamps: local minutes, days and months move across year ends", () => 
   assert.equal(M.localStamp(new Date(2026, 0, 2, 3, 4)), "2026-01-02T03:04");
 });
 
-test("tags: no #, lowercase, no duplicates even with accents, capped", () => {
-  assert.deepEqual(M.parseTags("#Praia, verão  #praia #Verao"), ["praia", "verão"]);
-  assert.equal(M.parseTags(Array.from({ length: 30 }, (_, i) => "t" + i).join(" ")).length, M.LIMITS.tags);
+test("tags: split by commas (a tag can have spaces), no #, lowercase, no duplicates even with accents, capped", () => {
+  assert.deepEqual(M.parseTags("#Praia, verão, #praia,Verao , a  Good day"), ["praia", "verão", "a good day"]);
+  assert.equal(M.parseTags(Array.from({ length: 30 }, (_, i) => "t" + i).join(",")).length, M.LIMITS.tags);
   assert.deepEqual(M.parseTags(""), []);
 });
 

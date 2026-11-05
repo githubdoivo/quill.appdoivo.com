@@ -29,8 +29,8 @@ export const isMood = (m) => m === null || MOODS.includes(m);
 // "#Praia, verão  #praia" -> ["praia", "verão"]: lowercase, no #, no duplicates
 export function parseTags(s) {
   const out = [];
-  for (const raw of String(s ?? "").split(/[,\s]+/)) {
-    const t = clip(raw.replace(/^#+/, "").toLowerCase(), LIMITS.tag);
+  for (const raw of String(s ?? "").split(/[,;\n]+/)) {
+    const t = clip(raw.replace(/#/g, "").replace(/\s+/g, " ").trim().toLowerCase(), LIMITS.tag);
     if (t && !out.some((x) => fold(x) === fold(t))) out.push(t);
     if (out.length >= LIMITS.tags) break;
   }
@@ -38,7 +38,7 @@ export function parseTags(s) {
 }
 
 /* ---------- makers (always return clean, bounded items) ---------- */
-export const newEntry = (o = {}) => ({ id: o.id || uid(), type: "entry", at: isStamp(o.at) ? o.at : localStamp(), mood: isMood(o.mood ?? null) ? o.mood ?? null : null, text: clip(o.text, LIMITS.text), photos: (o.photos || []).slice(0, LIMITS.photos), tags: parseTags((o.tags || []).join(" ")), updated: Date.now() });
+export const newEntry = (o = {}) => ({ id: o.id || uid(), type: "entry", at: isStamp(o.at) ? o.at : localStamp(), mood: isMood(o.mood ?? null) ? o.mood ?? null : null, text: clip(o.text, LIMITS.text), photos: (o.photos || []).slice(0, LIMITS.photos), tags: parseTags((o.tags || []).join(",")), updated: Date.now() });
 export const newPage = (o = {}) => ({ id: o.id || uid(), type: "page", title: clip(o.title, LIMITS.title), pinned: !!o.pinned, blocks: (o.blocks || [newBlock("text")]).slice(0, LIMITS.blocks), updated: Date.now() });
 export const newBoard = (o = {}) => ({ id: o.id || uid(), type: "board", title: clip(o.title, LIMITS.title), items: (o.items || []).slice(0, LIMITS.boardItems), updated: Date.now() });
 export const newBook = (o = {}) => ({ id: o.id || uid(), type: "book", kind: o.kind === "burn" ? "burn" : "album", title: clip(o.title, LIMITS.title), pages: (o.pages || []).slice(0, LIMITS.pages), updated: Date.now() });
