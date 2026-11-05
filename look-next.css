@@ -1,0 +1,89 @@
+/* Journal, next look ("pressed flowers"), from the ChatGPT design of 2026-11-05.
+   Loaded only on the preview link (?look=next, see js/look.js), on top of app.css, so the
+   live look stays untouched until it is approved. To ship: link this file always. */
+:root {
+  --paper: #f3dcc2; --paper-2: #ead2bb; --card: rgba(250, 241, 231, .86); --card-solid: #f9efe4; --card-edge: #e8d5c2;
+  --ink: #2c2228; --ink-2: #5e4c55; --ink-3: #6f5c66; --rule: #e4d0c0;
+  --accent: #6d2e56; --accent-ink: #ffffff; --accent-soft: #f1dfe2;
+  --field: #f2e2da; --field-edge: #dcc4bb; --heading: #5a2349;
+  --m1: #ecdccd; --m2: #dfb7a8; --m3: #cb9c99; --m4: #a8748d; --m5: #6d2e56;
+  --mi-lo: #2c2228; --mi-hi: #ffffff;
+  --bg-image: url(img/paper-flowers.webp);
+  --font-head: ui-serif, "New York", "Iowan Old Style", Charter, Georgia, serif;
+  --radius: 18px; --radius-s: 12px;
+  --shadow: 0 1px 2px rgba(90, 50, 60, .05), 0 12px 30px -20px rgba(90, 50, 60, .3);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #1c171a; --paper-2: #251d22; --card: rgba(37, 29, 34, .9); --card-solid: #251d22; --card-edge: #3a2e35;
+    --ink: #f2e6ea; --ink-2: #cdbbc4; --ink-3: #b19fa9; --rule: #3c3037;
+    --accent: #e0a9c9; --accent-ink: #24151e; --accent-soft: #3d2834;
+    --field: #2b2228; --field-edge: #45373f; --heading: #f0cfe0;
+    --m1: #3a2f35; --m2: #5c4250; --m3: #84576d; --m4: #b47c9b; --m5: #e0a9c9;
+    --mi-lo: #f2e6ea; --mi-hi: #24151e;
+    --bg-image: radial-gradient(80% 60% at 0% 10%, #2b2026, transparent 70%), radial-gradient(70% 60% at 100% 90%, #2a1f25, transparent 70%);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1c171a; --paper-2: #251d22; --card: rgba(37, 29, 34, .9); --card-solid: #251d22; --card-edge: #3a2e35;
+  --ink: #f2e6ea; --ink-2: #cdbbc4; --ink-3: #b19fa9; --rule: #3c3037;
+  --accent: #e0a9c9; --accent-ink: #24151e; --accent-soft: #3d2834;
+  --field: #2b2228; --field-edge: #45373f; --heading: #f0cfe0;
+  --m1: #3a2f35; --m2: #5c4250; --m3: #84576d; --m4: #b47c9b; --m5: #e0a9c9;
+  --mi-lo: #f2e6ea; --mi-hi: #24151e;
+  --bg-image: radial-gradient(80% 60% at 0% 10%, #2b2026, transparent 70%), radial-gradient(70% 60% at 100% 90%, #2a1f25, transparent 70%);
+}
+
+.bg { background-color: var(--paper); background-image: var(--bg-image); background-position: center; background-size: cover; background-repeat: no-repeat; }
+h1, h2, .cal-head h3, .moods legend, .brand { color: var(--heading); }
+h1 { font-size: clamp(1.7rem, 1.3rem + 1.5vw, 2.4rem); }
+.brand { font-size: 1.4rem; }
+.brand-mark { color: var(--accent); }
+
+/* menu: plum pill for the current page */
+.nav button { color: var(--ink); font-family: var(--font-head); font-size: 1rem; }
+.nav button:hover { background: var(--accent-soft); }
+.nav button[aria-current="page"] { background: var(--accent); color: var(--accent-ink); }
+.icon-btn { color: var(--ink); }
+.icon-btn:hover { background: var(--accent-soft); }
+
+/* cards: lighter paper with a soft edge */
+.card { background: var(--card); border-color: var(--card-edge); box-shadow: var(--shadow); }
+
+/* fields */
+input, select, textarea { background: var(--field); border-color: var(--field-edge); }
+.composer textarea { min-height: 150px; font-size: 1.1rem; }
+
+/* buttons */
+button.primary { background: var(--accent); color: var(--accent-ink); font-family: var(--font-head); font-weight: 600; }
+button.ghost { background: transparent; border-color: var(--field-edge); color: var(--ink); }
+button.ghost:hover { background: var(--accent-soft); }
+
+/* moods: soft chips with a dot, the chosen one outlined in plum */
+.mood span { background: var(--field); border-color: var(--field-edge); }
+.mood input:checked + span { background: var(--accent-soft); border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+
+/* diary: a plum line, tags in soft pills */
+.entry .tags li { background: var(--accent-soft); color: var(--heading); }
+.day-label { color: var(--heading); }
+
+/* calendar: rounded tiles, today in deep plum */
+.cal .d { border-radius: 10px; background: var(--field); }
+.cal .d.today { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+
+/* lists of pages, boards and books */
+.tile { background: var(--card); border-color: var(--card-edge); box-shadow: var(--shadow); }
+.tile strong { color: var(--heading); }
+
+dialog { background: var(--card-solid); }
+
+/* phone: all six sections in one row (icon over a short label), smaller mood chips */
+@media (max-width: 640px) {
+  .nav { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; overflow: visible; margin: 0 -6px; padding: 0; }
+  .nav button { flex-direction: column; justify-content: flex-start; gap: 3px; padding: 8px 2px 7px; border-radius: 14px; font-size: .68rem; line-height: 1.15; white-space: normal; text-align: center; min-width: 0; min-height: 60px; }
+  .nav button svg { width: 22px; height: 22px; }
+  h1 { font-size: 1.75rem; }
+  .moods { gap: 6px; }
+  .mood span { min-height: 44px; padding: 0 12px 0 8px; font-size: .9rem; gap: 6px; }
+  .mood i { width: 16px; height: 16px; }
+}
