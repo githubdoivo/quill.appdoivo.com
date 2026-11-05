@@ -270,10 +270,11 @@ test("phone: nothing scrolls sideways and every button is at least 44px tall", a
   }
 });
 
-test("the privacy page exists in both languages and runs no scripts", async ({ page }) => {
+test("the privacy page exists in both languages and runs only the frame script", async ({ page }) => {
   await page.goto("/privacy.html");
   await expect(page.locator("h1")).toHaveText(["Privacy", "Privacidade"]);
-  expect(await page.locator("script").count()).toBe(0);
+  await expect(page.locator("script")).toHaveCount(1);
+  await expect(page.locator("script")).toHaveAttribute("src", "/js/frame.js");
   await expect(page.locator("body")).toContainText("GPS");
 });
 
@@ -307,4 +308,35 @@ test("monkey: 150 random taps, keys and typing break nothing", async ({ page }) 
     } else await page.keyboard.press(["Enter", "Backspace", "Tab", "Escape", "ArrowRight", "ArrowDown"][Math.floor(rnd() * 6)]);
   }
   expect(problems).toEqual([]);
+});
+
+/* ---------- phone frame (same as ivolopes.com) ---------- */
+test("nothing is pinned to the screen edges (iPhone Safari paints a solid band over it)", async ({ page }) => {
+  await page.goto("/"); await page.waitForSelector("html[data-ready]");
+  const pinned = await page.evaluate(() => [...document.querySelectorAll("body *")].filter((el) => ["fixed", "sticky"].includes(getComputedStyle(el).position)).map((el) => el.id || el.className));
+  expect(pinned).toEqual([]);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflowY)).toBe("hidden");
+});
+
+test("the window sits scrolled down by the strip above it, and only the page layer scrolls", async ({ page }) => {
+  await page.goto("/"); await page.waitForSelector("html[data-ready]");
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(160);
+  const top = await page.locator(".top").evaluate((el) => el.getBoundingClientRect().top);
+  expect(top).toBeGreaterThanOrEqual(0);
+  expect(top).toBeLessThan(40);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(160);
+});
+
+test("the background covers the whole screen and past it, and is never one flat colour", async ({ page }) => {
+  await page.goto("/"); await page.waitForSelector("html[data-ready]");
+  const vp = page.viewportSize();
+  for (const scheme of ["light", "dark"]) {
+    await page.emulateMedia({ colorScheme: scheme });
+    const bg = await page.locator(".bg").evaluate((el) => { const r = el.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, w: r.width, img: getComputedStyle(el).backgroundImage }; });
+    expect(bg.top, scheme).toBeLessThanOrEqual(-150);
+    expect(bg.bottom, scheme).toBeGreaterThanOrEqual(vp.height);
+    expect(bg.w, scheme).toBeGreaterThanOrEqual(vp.width);
+    expect(bg.img, scheme).not.toBe("none");
+  }
 });
