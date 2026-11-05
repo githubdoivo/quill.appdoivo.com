@@ -406,7 +406,7 @@ async function makeBackup() {
   for (const id of used) { const blob = await db.getFile(id); if (blob) files.push([`files/${id}`, new Uint8Array(await blob.arrayBuffer())]); }
   const data = JSON.stringify({ app: "journal", version: M.BACKUP_VERSION, saved: new Date().toISOString(), items, settings: S.settings });
   const blob = await zip([["data.json", data], ...files]);
-  const url = URL.createObjectURL(blob), a = h("a", { href: url, download: `journal-backup-${today()}.journal.zip` });
+  const url = URL.createObjectURL(blob), a = h("a", { href: url, download: `quill-backup-${today()}.zip` });
   document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 async function restoreBackup(file) {

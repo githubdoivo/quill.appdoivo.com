@@ -195,7 +195,7 @@ test("backup with photos, delete everything only after typing the word, then res
   await expect(page.locator("article.entry .photos img")).toHaveCount(1);
   await page.goto("/#settings");
   const [dl] = await Promise.all([page.waitForEvent("download"), page.click("#backup")]);
-  expect(dl.suggestedFilename()).toMatch(/^journal-backup-\d{4}-\d{2}-\d{2}\.journal\.zip$/);
+  expect(dl.suggestedFilename()).toMatch(/^quill-backup-\d{4}-\d{2}-\d{2}\.zip$/);
   const backup = await dl.path();
   await page.click("#wipe"); await page.locator("#confirm input").fill("nah"); await page.locator("#confirm-yes").click();
   await page.goto("/#today"); await expect(page.locator("article.entry")).toHaveCount(1);

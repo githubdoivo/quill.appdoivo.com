@@ -2,7 +2,7 @@
 // languages. PT: European Portuguese, impersonal (never "tu"), gender-neutral.
 export const WORDS = {
   en: {
-    brand: "Journal", tagline: "A Quiet Place for Your Mind",
+    brand: "Quill", tagline: "A Quiet Place for Your Mind",
     navToday: "Today", navPages: "Pages", navBoards: "Boards", navBooks: "Books", navSearch: "Search", navSettings: "Settings",
     howAreYou: "How Are You?", moods: ["Awful", "Low", "Okay", "Good", "Great"], noMood: "No Mood",
     write: "What's on your mind?", tags: "Tags", tagsHint: "#walk, #family", addPhotos: "Add Photos", save: "Save", saved: "Saved.", when: "When",
@@ -24,7 +24,7 @@ export const WORDS = {
     skip: "Skip to Content", langSwitch: "PT", langLabel: "PT · Ver em português", themeToggle: "Switch Theme", confirm: "OK",
   },
   pt: {
-    brand: "Diário", tagline: "Um Lugar Calmo para a Mente",
+    brand: "Quill", tagline: "Um Lugar Calmo para a Mente",
     navToday: "Hoje", navPages: "Páginas", navBoards: "Quadros", navBooks: "Livros", navSearch: "Pesquisar", navSettings: "Definições",
     howAreYou: "Como Está?", moods: ["Péssimo", "Em Baixo", "Assim-Assim", "Bem", "Ótimo"], noMood: "Sem Humor",
     write: "O que vai na mente?", tags: "Etiquetas", tagsHint: "#passeio, #família", addPhotos: "Adicionar Fotos", save: "Guardar", saved: "Guardado.", when: "Quando",
