@@ -244,3 +244,7 @@ svg.ph { fill: currentColor; stroke: none !important; }
 .cal-legend .m-out svg.ph { fill: var(--heading); }
 .moods .mood { display: block; min-width: 0; }
 .moods .mood span { display: flex; width: 100%; }
+/* Your Data: short buttons under a label (same as Tally) */
+.data-rows { display: grid; gap: 10px; margin-top: 12px; }
+.data-row { display: flex; align-items: center; gap: 8px 10px; flex-wrap: wrap; }
+.data-label { min-width: 72px; font-weight: 600; color: var(--ink-2); }
