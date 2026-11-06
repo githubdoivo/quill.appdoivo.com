@@ -111,6 +111,9 @@ function render() {
   if (S.focusTitle) { S.focusTitle = false; $(".page-title", main)?.focus(); }
 }
 const head = (title, ...right) => h("div", { class: "view-head" }, h("h1", { text: title }), ...right);
+const todayTitle = (day) => { const [y, m, d] = day.split("-").map(Number), dt = new Date(y, m - 1, d), pt = S.settings.lang === "pt";
+  const wd = dt.toLocaleDateString(pt ? "pt-PT" : "en-GB", { weekday: "long" }).replace(/-feira$/i, ""), mo = dt.toLocaleDateString(pt ? "pt-PT" : "en-GB", { month: "long" });
+  return titleCase(pt ? `${wd}, ${d} de ${mo}` : `${wd}, ${d} ${mo}`); };
 const backBtn = (hash) => h("button", { type: "button", class: "ghost small", text: `← ${t("back")}`, onclick: () => go(hash) });
 
 const moodIcon = (m) => icon(`mood${m}`);
@@ -118,10 +121,23 @@ const camIcon = () => icon("photos", "cam");
 const tagChips = (tags) => h("ul", { class: "tags" }, ...tags.map((x) => h("li", { text: x })));
 /* ---------- today: write, diary, calendar ---------- */
 function viewToday() {
-  const d = S.draft || (S.draft = { id: null, mood: null, text: "", tags: "", at: M.localStamp(), photos: [] });
+  const d = S.draft || (S.draft = { id: null, mood: null, text: "", tags: "", at: M.localStamp(), photos: [], moment: null });
   const moodSet = h("fieldset", { class: "moods" }, h("legend", { text: t("howAreYou") }),
     ...M.MOODS.map((m) => h("label", { class: "mood" }, h("input", { type: "radio", name: "mood", value: String(m), checked: d.mood === m, onchange: () => { d.mood = m; } }), h("span", {}, h("i", { class: `m${m}`, "aria-hidden": "true" }, moodIcon(m)), t("moods")[m - 1]))),
-    h("label", { class: "mood" }, h("input", { type: "radio", name: "mood", value: "", checked: d.mood === null, onchange: () => { d.mood = null; } }), h("span", { text: t("noMood") })));
+    h("label", { class: "mood" }, h("input", { type: "radio", name: "mood", value: "", checked: d.mood === null, onchange: () => { d.mood = null; } }), h("span", {}, h("i", { class: "m0", "aria-hidden": "true" }, icon("none")), t("noMood"))));
+  // a moment outside: a walk, a breath, a quiet sit; logged after, with what was found
+  const mo = d.moment || {};
+  const chips = (name, list, words, val, set) => h("div", { class: "m-chips", role: "radiogroup", "aria-label": t(name === "kind" ? "momentWhat" : "momentWhere") },
+    ...list.map((k, i) => h("label", { class: "m-chip" }, h("input", { type: "radio", name: "mo-" + name, value: k, checked: val === k, onchange: () => { set(k); } }), h("span", { text: words[i] }))));
+  const moment = h("details", { class: "moment", open: !!d.moment, ontoggle: (e) => { if (e.target.open && !d.moment) d.moment = { kind: "walk", place: "", minutes: 0, found: "" }; } },
+    h("summary", {}, icon("walk"), h("span", { text: t("moment") })),
+    h("p", { class: "muted small", text: t("momentHint") }),
+    h("div", { class: "m-field" }, h("span", { class: "m-label", text: t("momentWhat") }), chips("kind", M.MOMENT_KINDS, t("momentKinds"), mo.kind || "walk", (k) => { d.moment = { ...(d.moment || {}), kind: k }; })),
+    h("div", { class: "m-field" }, h("span", { class: "m-label", text: t("momentWhere") }), chips("place", M.MOMENT_PLACES, t("momentPlaces"), mo.place || "", (k) => { d.moment = { kind: "walk", ...(d.moment || {}), place: k }; })),
+    h("div", { class: "row m-row" },
+      h("label", { class: "f f-min" }, h("span", { text: t("minutes") }), h("input", { type: "number", inputmode: "numeric", min: "1", max: "600", value: mo.minutes || "", oninput: (e) => { d.moment = { kind: "walk", ...(d.moment || {}), minutes: +e.target.value || 0 }; } })),
+      h("label", { class: "f f-found" }, h("span", { text: t("foundLabel") }), h("input", { maxlength: "120", placeholder: t("foundHint"), value: mo.found || "", oninput: (e) => { d.moment = { kind: "walk", ...(d.moment || {}), found: e.target.value }; } }))),
+    h("button", { type: "button", class: "link-btn", text: t("momentRemove"), onclick: () => { d.moment = null; render(); } }));
   const text = h("textarea", { id: "entry-text", "data-auto": true, rows: "4", maxlength: String(M.LIMITS.text), placeholder: t("write"), "aria-label": t("write"), value: d.text, oninput: (e) => { d.text = e.target.value; autosize(e.target); } });
   const thumbs = h("ul", { class: "thumbs" });
   const preview = tagChips(M.parseTags(d.tags)); preview.classList.add("tag-preview");
@@ -129,13 +145,13 @@ function viewToday() {
   drawThumbs();
   const form = h("form", { class: "card composer", novalidate: true, autocomplete: "off", onsubmit: async (ev) => {
     ev.preventDefault();
-    if (!d.text.trim() && d.mood === null && !d.photos.length) { text.focus(); return; }
+    if (!d.text.trim() && d.mood === null && !d.photos.length && !d.moment) { text.focus(); return; }
     const base = d.id ? S.items.get(d.id) : null;
-    const entry = M.newEntry({ id: d.id || undefined, at: d.at, mood: d.mood, text: d.text.trim(), tags: M.parseTags(d.tags), photos: d.photos });
+    const entry = M.newEntry({ id: d.id || undefined, at: d.at, mood: d.mood, text: d.text.trim(), tags: M.parseTags(d.tags), photos: d.photos, moment: d.moment });
     if (base) entry.created = base.created; else entry.created = Date.now();
     await save(entry, { now: true });
     S.draft = null; toast(t("saved")); render(); $("#entry-text")?.focus();
-  } }, moodSet, text,
+  } }, moodSet, moment, text,
     h("div", { class: "row" },
       h("label", { class: "f f-tags" }, h("span", { text: t("tags") }), h("input", { name: "tags", value: d.tags, placeholder: t("tagsHint"), maxlength: "200", oninput: (e) => { d.tags = e.target.value; preview.replaceChildren(...tagChips(M.parseTags(d.tags)).childNodes); } })),
       h("label", { class: "f f-when" }, h("span", { text: t("when") }), h("input", { type: "datetime-local", name: "at", value: d.at, onchange: (e) => { if (M.isStamp(e.target.value)) d.at = e.target.value; } }))),
@@ -158,28 +174,32 @@ function viewToday() {
   }
   if (entries.length > S.shown) list.append(h("button", { type: "button", class: "ghost", text: S.settings.lang === "pt" ? "Mostrar Mais" : "Show More", onclick: () => { S.shown += 40; render(); } }));
 
-  return h("div", {}, head(fmtDay(today())), h("div", { class: "grid2" }, h("div", {}, form, list), h("aside", {}, calendarCard(entries), memoriesCard(entries))));
+  return h("div", {}, head(todayTitle(today())), h("div", { class: "grid2" }, h("div", {}, form, list), h("aside", {}, calendarCard(entries), memoriesCard(entries))));
 }
 function entryCard(e) {
   return h("article", { class: `entry ${e.mood ? "" : "no-mood"}`, style: null, "data-mood": e.mood ? String(e.mood) : null },
     h("div", { class: "entry-head" }, h("strong", { text: e.at.slice(11) }), e.mood ? h("span", { class: "mood-tag" }, h("i", { class: `m${e.mood}`, "aria-hidden": "true" }, moodIcon(e.mood)), t("moods")[e.mood - 1]) : null),
+    e.moment ? h("p", { class: "moment-line" }, icon("walk"), h("span", { text: [t("momentKinds")[M.MOMENT_KINDS.indexOf(e.moment.kind)], e.moment.place ? t("momentPlaces")[M.MOMENT_PLACES.indexOf(e.moment.place)] : "", e.moment.minutes ? `${e.moment.minutes} min` : ""].filter(Boolean).join(" · ") })) : null,
+    e.moment && e.moment.found ? h("p", { class: "found-line" }, h("b", { text: t("foundLine") + ": " }), e.moment.found) : null,
     e.text ? h("p", { text: e.text }) : null,
     e.photos.length ? h("div", { class: "photos" }, ...e.photos.map((id) => img(id, ""))) : null,
     e.tags.length ? tagChips(e.tags) : null,
     h("div", { class: "entry-actions" },
-      h("button", { type: "button", class: "ghost small", text: t("edit"), onclick: () => { S.draft = { id: e.id, mood: e.mood, text: e.text, tags: e.tags.join(", "), at: e.at, photos: [...e.photos] }; render(); window.scrollTo({ top: 0 }); $("#entry-text")?.focus(); } }),
+      h("button", { type: "button", class: "ghost small", text: t("edit"), onclick: () => { S.draft = { id: e.id, mood: e.mood, text: e.text, tags: e.tags.join(", "), at: e.at, photos: [...e.photos], moment: e.moment ? { ...e.moment } : null }; render(); window.scrollTo({ top: 0 }); $("#entry-text")?.focus(); } }),
       h("button", { type: "button", class: "ghost small", text: t("delete"), onclick: async () => { await remove(e); render(); } })));
 }
 function calendarCard(entries) {
   const m = S.calMonth, [y, mo] = m.split("-").map(Number), byDay = M.moodByDay(entries, m), counts = new Map();
-  for (const e of entries) if (M.monthOf(e.at) === m) counts.set(M.dayOf(e.at), (counts.get(M.dayOf(e.at)) || 0) + 1);
+  const outside = new Set();
+  for (const e of entries) if (M.monthOf(e.at) === m) { counts.set(M.dayOf(e.at), (counts.get(M.dayOf(e.at)) || 0) + 1); if (e.moment) outside.add(M.dayOf(e.at)); }
   const cells = WEEKDAYS[S.settings.lang].map((w) => h("span", { class: "wd", "aria-hidden": "true", text: w }));
   for (let i = 0; i < M.firstWeekday(m); i++) cells.push(h("span", { "aria-hidden": "true" }));
   for (let d = 1; d <= M.daysInMonth(m); d++) {
     const day = `${m}-${String(d).padStart(2, "0")}`, mood = byDay.get(day), n = counts.get(day) || 0;
     const lvl = mood ? Math.round(mood) : 0;
     const label = `${fmtDay(day)}${n ? `: ${t("entries", n)}` : ""}${mood ? `, ${t("moods")[lvl - 1]}` : ""}`;
-    cells.push(h("span", { class: `d ${lvl ? "has m" + lvl : ""} ${day === today() ? "today" : ""}`, role: "img", "aria-label": label, title: label, text: String(d) }));
+    const out = outside.has(day), lab = out ? `${label}, ${t("momentLegend").toLowerCase()}` : label;
+    cells.push(h("span", { class: `d ${lvl ? "has m" + lvl : ""} ${day === today() ? "today" : ""} ${out ? "out" : ""}`, role: "img", "aria-label": lab, title: lab }, String(d), out ? icon("walk", "out-mark") : null));
   }
   const st = M.moodStats(entries, { from: `${m}-01`, to: `${m}-31` });
   return h("section", { class: "card", "aria-labelledby": "cal-title" },
@@ -189,7 +209,7 @@ function calendarCard(entries) {
       h("h3", { "aria-live": "polite", text: `${MONTHS[S.settings.lang][mo - 1]} ${y}` }),
       h("button", { type: "button", class: "icon-btn", "aria-label": t("nextMonth"), text: "›", onclick: () => { S.calMonth = M.addMonths(m, 1); render(); } })),
     h("div", { class: "cal" }, ...cells),
-    h("ul", { class: "cal-legend", "aria-hidden": "true" }, ...M.MOODS.map((k) => h("li", {}, h("i", { class: `m${k}` }, moodIcon(k)), t("moods")[k - 1]))),
+    h("ul", { class: "cal-legend", "aria-hidden": "true" }, ...M.MOODS.map((k) => h("li", {}, h("i", { class: `m${k}` }, moodIcon(k)), t("moods")[k - 1])), h("li", {}, h("i", { class: "m-out" }, icon("walk")), t("momentLegend"))),
     h("p", { class: "stat-line", text: [st.average ? t("average", st.average.toFixed(1).replace(".", S.settings.lang === "pt" ? "," : ".")) : "", t("streak", M.streak(entries, today()))].filter(Boolean).join(" · ") }));
 }
 function memoriesCard(entries) {
@@ -338,7 +358,7 @@ function viewBoard() {
 function viewBooks() {
   const books = byType("book").sort((a, b) => b.updated - a.updated);
   const mk = (kind) => () => { const b = M.newBook({ kind, title: "", pages: [{ id: M.uid(), file: null, title: "", text: "" }] }); save(b, { now: true }); S.bookPage = 0; S.bookMode = "read"; go(`#books/${b.id}`); };
-  return h("div", {}, head(t("booksTitle"), h("button", { type: "button", class: "primary", text: t("newAlbum"), onclick: mk("album") }), h("button", { type: "button", class: "ghost", text: t("newBurn"), onclick: mk("burn") })),
+  return h("div", {}, head(t("booksTitle"), h("div", { class: "book-actions" }, h("button", { type: "button", class: "ghost small", onclick: mk("album") }, icon("album"), h("span", { text: t("newAlbum") })), h("button", { type: "button", class: "ghost small", onclick: mk("burn") }, icon("burn"), h("span", { text: t("newBurn") })))),
     books.length ? h("ul", { class: "tiles" }, ...books.map((b) => { const cover = b.pages.find((p) => p.file); return h("li", {}, h("a", { class: `tile book-tile cover-${b.cover || (b.kind === "burn" ? "ink" : "plum")}`, href: `#books/${b.id}`, onclick: () => { S.bookPage = 0; S.bookMode = "read"; } }, cover ? img(cover.file, "") : null, h("span", { class: "kind", text: b.kind === "burn" ? t("burn") : t("album") }), h("strong", { text: b.title || t("untitled") }), h("span", { text: t("pageOf", b.pages.length, b.pages.length).replace(/^\D+\d+\D+/, "") + " " + (S.settings.lang === "pt" ? "páginas" : "pages") }))); }))
       : h("p", { class: "muted", text: t("noBooks") }));
 }

@@ -38,7 +38,11 @@ export function parseTags(s) {
 }
 
 /* ---------- makers (always return clean, bounded items) ---------- */
-export const newEntry = (o = {}) => ({ id: o.id || uid(), type: "entry", at: isStamp(o.at) ? o.at : localStamp(), mood: isMood(o.mood ?? null) ? o.mood ?? null : null, text: clip(o.text, LIMITS.text), photos: (o.photos || []).slice(0, LIMITS.photos), tags: parseTags((o.tags || []).join(",")), updated: Date.now() });
+// A moment outside (2026-11-06): a walk, a breath, a sit in an open space, logged after, off the phone.
+export const MOMENT_KINDS = ["walk", "breathe", "meditate", "sit"];
+export const MOMENT_PLACES = ["park", "beach", "woods", "garden", "streets", "hills"];
+export const cleanMoment = (m) => m && MOMENT_KINDS.includes(m.kind) ? { kind: m.kind, place: MOMENT_PLACES.includes(m.place) ? m.place : "", minutes: Number.isFinite(+m.minutes) && +m.minutes > 0 ? Math.min(600, Math.round(+m.minutes)) : 0, found: clip(m.found || "", 120) } : null;
+export const newEntry = (o = {}) => ({ id: o.id || uid(), type: "entry", at: isStamp(o.at) ? o.at : localStamp(), mood: isMood(o.mood ?? null) ? o.mood ?? null : null, text: clip(o.text, LIMITS.text), photos: (o.photos || []).slice(0, LIMITS.photos), tags: parseTags((o.tags || []).join(",")), moment: cleanMoment(o.moment), updated: Date.now() });
 export const newPage = (o = {}) => ({ id: o.id || uid(), type: "page", title: clip(o.title, LIMITS.title), pinned: !!o.pinned, blocks: (o.blocks || [newBlock("text")]).slice(0, LIMITS.blocks), updated: Date.now() });
 export const newBoard = (o = {}) => ({ id: o.id || uid(), type: "board", title: clip(o.title, LIMITS.title), items: (o.items || []).slice(0, LIMITS.boardItems), updated: Date.now() });
 // how a book looks (all optional): cover colour, paper and, for albums, how photos are framed
@@ -125,7 +129,7 @@ export const onThisDay = (entries, today) => sortEntries(entries.filter((e) => d
 export function search(items, q, { type = "" } = {}) {
   const terms = fold(q).split(/\s+/).filter(Boolean);
   if (!terms.length) return [];
-  const text = (it) => it.type === "entry" ? `${it.text} ${it.tags.join(" ")} ${it.at}` : it.type === "page" ? pageText(it) : it.type === "board" ? [it.title, ...it.items.map((i) => i.text)].join(" ") : [it.title, ...it.pages.flatMap((p) => [p.title, p.text])].join(" ");
+  const text = (it) => it.type === "entry" ? `${it.text} ${it.tags.join(" ")} ${it.at} ${it.moment ? it.moment.found : ""}` : it.type === "page" ? pageText(it) : it.type === "board" ? [it.title, ...it.items.map((i) => i.text)].join(" ") : [it.title, ...it.pages.flatMap((p) => [p.title, p.text])].join(" ");
   return items.filter((it) => (!type || it.type === type) && terms.every((t) => fold(text(it)).includes(t)))
     .sort((a, b) => (b.at || "").localeCompare(a.at || "") || b.updated - a.updated);
 }

@@ -196,3 +196,51 @@ svg.ph { fill: currentColor; stroke: none !important; }
 .pz { min-height: 44px; }
 .pz[class*="cover-"] { width: 44px; min-height: 44px; background: radial-gradient(circle, var(--cv) 0 15px, transparent 16px); border: 0; box-shadow: none; }
 .pz[class*="cover-"][aria-checked="true"] { box-shadow: inset 0 0 0 2px var(--heading); }
+
+/* 2026-11-06 (APP-22): the same layout in English and Portuguese. Moods sit in a fixed 3 × 2 grid,
+   icon above a one-line word, so a longer word never adds a line. */
+.moods { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.moods legend { grid-column: 1 / -1; }
+.mood span { flex-direction: column; justify-content: center; gap: 4px; min-height: 64px; padding: 8px 4px; border-radius: 14px; text-align: center; font-size: .88rem; line-height: 1.1; white-space: nowrap; }
+.mood i { width: 26px; height: 26px; }
+.mood i.m0 svg.ph { fill: var(--ink-3); }
+@media (max-width: 640px) { .mood span { min-height: 60px; padding: 6px 2px; font-size: .84rem; gap: 3px; } .mood i { width: 24px; height: 24px; } }
+/* Today's title: one line in both languages */
+.view-head h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(1.45rem, 6.2vw, 2.3rem); }
+/* the writing card: the same breathing room above and below its buttons, no empty tail */
+.composer .thumbs:empty, .tag-preview:empty { display: none; }
+.composer { padding-bottom: 18px; }
+.composer .actions-row { margin-top: 16px; }
+/* Books: the two "new" buttons look alike and sit together */
+.book-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.book-actions button { display: inline-flex; align-items: center; gap: 8px; }
+.book-actions svg.ph { width: 20px; height: 20px; }
+@media (max-width: 640px) { .view-head:has(.book-actions) { flex-direction: column; align-items: stretch; } .book-actions button { flex: 1 1 0; justify-content: center; } }
+/* A moment outside */
+.moment { margin: 0 0 14px; border: 1px dashed color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 14px; padding: 4px 14px; background: color-mix(in srgb, var(--card) 70%, transparent); }
+.moment[open] { padding-bottom: 12px; }
+.moment summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; min-height: 44px; font: 600 1rem var(--font-head); color: var(--heading); }
+.moment summary::-webkit-details-marker { display: none; }
+.moment summary svg.ph { width: 24px; height: 24px; fill: var(--heading); }
+.moment summary::after { content: "+"; margin-left: auto; font-weight: 400; font-size: 1.3rem; color: var(--ink-3); }
+.moment[open] summary::after { content: "−"; }
+.moment .small { font-size: .9rem; margin: 2px 0 10px; }
+.m-field { display: grid; gap: 6px; margin-bottom: 10px; }
+.m-label { font-size: .85rem; font-weight: 600; color: var(--ink-2); }
+.m-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.m-chip { position: relative; }
+.m-chip input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.m-chip span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--field-edge); background: var(--field); font-size: .9rem; white-space: nowrap; }
+.m-chip input:checked + span { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.m-chip input:focus-visible + span { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.m-row { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 10px; }
+.link-btn { background: none; border: 0; padding: 0; min-height: 44px; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font: inherit; font-size: .9rem; }
+.moment-line { display: flex; align-items: center; gap: 8px; margin: 6px 0 2px; color: var(--heading); font-weight: 600; }
+.moment-line svg.ph { width: 22px; height: 22px; fill: var(--heading); }
+.found-line { margin: 2px 0 6px; color: var(--ink-2); font-style: italic; }
+.found-line b { font-style: normal; font-weight: 600; }
+.cal .d.out { position: relative; }
+.cal .d .out-mark { position: absolute; right: 2px; bottom: 2px; width: 12px; height: 12px; fill: var(--heading); opacity: .8; }
+.cal-legend .m-out svg.ph { fill: var(--heading); }
+.moods .mood { display: block; min-width: 0; }
+.moods .mood span { display: flex; width: 100%; }
