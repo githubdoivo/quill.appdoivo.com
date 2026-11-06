@@ -5,6 +5,7 @@ import * as db from "./db.js";
 import { prepareImage, ACCEPT } from "./images.js";
 import { zip, unzip } from "./zip.js";
 import { WORDS, MONTHS, WEEKDAYS } from "./words.js";
+import { icon } from "./icons.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -112,15 +113,8 @@ function render() {
 const head = (title, ...right) => h("div", { class: "view-head" }, h("h1", { text: title }), ...right);
 const backBtn = (hash) => h("button", { type: "button", class: "ghost small", text: `← ${t("back")}`, onclick: () => go(hash) });
 
-const MOOD_ICON = { // small line symbols, one per mood (storm, cloud, cloud and sun, sun, flower)
-  1: "M7 15a4 4 0 1 1 1-7.9A5 5 0 0 1 17.5 9 3.5 3.5 0 0 1 17 16H7M9 18l-1 2M13 18l-1 2M17 18l-1 2",
-  2: "M7 17a4 4 0 1 1 1-7.9A5 5 0 0 1 17.5 11 3.5 3.5 0 0 1 17 18H7",
-  3: "M9 6.5V5M5.5 9H4M6.4 6.4 5.3 5.3M8 17a3.5 3.5 0 1 1 .8-6.9A4.5 4.5 0 0 1 17 11.5 3 3 0 0 1 16.5 17.5H8M12 9a3 3 0 0 0-5 2",
-  4: "M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4",
-  5: "M12 3.5l2.4 5 5.4.7-4 3.7 1 5.4L12 15.7l-4.8 2.6 1-5.4-4-3.7 5.4-.7Z",
-};
-const moodIcon = (m) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true"); const p = document.createElementNS("http://www.w3.org/2000/svg", "path"); p.setAttribute("d", MOOD_ICON[m]); s.append(p); return s; };
-const camIcon = () => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("class", "cam"); s.setAttribute("aria-hidden", "true"); const p = document.createElementNS("http://www.w3.org/2000/svg", "path"); p.setAttribute("d", "M4 8h3l1.5-2h7L17 8h3v11H4ZM12 11a3 3 0 1 0 0 6 3 3 0 0 0 0-6"); s.append(p); return s; };
+const moodIcon = (m) => icon(`mood${m}`);
+const camIcon = () => icon("photos", "cam");
 const tagChips = (tags) => h("ul", { class: "tags" }, ...tags.map((x) => h("li", { text: x })));
 /* ---------- today: write, diary, calendar ---------- */
 function viewToday() {
