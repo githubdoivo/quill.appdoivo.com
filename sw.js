@@ -1,7 +1,7 @@
 // Offline support: the app shell is cached on install;
 // a new version (VERSION bump) replaces the old cache. No data is ever cached
 // here — the journal lives in IndexedDB.
-const VERSION = "quill-v13";
+const VERSION = "quill-v14";
 const SHELL = ["/", "/index.html", "/app.css?v=3", "/js/app.js?v=9", "/js/frame.js", "/look.css?v=11", "/img/paper-flowers.webp", "/img/paper-flowers-night.webp", "/img/paper-flowers-phone.webp", "/img/paper-flowers-phone-night.webp", "/js/model.js", "/js/db.js", "/js/words.js", "/js/icons.js", "/js/images.js", "/js/zip.js", "/privacy.html", "/manifest.webmanifest", "/icons/icon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== VERSION).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });

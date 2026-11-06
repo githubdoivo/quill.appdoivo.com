@@ -2,7 +2,7 @@
 // languages. PT: European Portuguese, impersonal (never "tu"), gender-neutral.
 export const WORDS = {
   en: {
-    brand: "Quill", tagline: "A Quiet Place for Your Mind",
+    brand: "quilldoivo", tagline: "A Quiet Place for Your Mind",
     navToday: "Today", navPages: "Pages", navBoards: "Boards", navBooks: "Books", navSearch: "Search", navSettings: "Settings",
     howAreYou: "How Are You?", moods: ["Awful", "Low", "Okay", "Good", "Great"], moment: "A Moment Outside", momentHint: "Back from a walk, a breath or a quiet sit outside? Keep the moment here. The time out there was for you, not the phone.", momentKinds: ["Walk", "Breathe", "Meditate", "Sit Outside"], momentPlaces: ["Park", "Beach", "Woods", "Garden", "Streets", "Hills"], momentWhat: "What", momentWhere: "Where", minutes: "Minutes", foundLabel: "Something I Found", foundHint: "a smooth stone, a feather…", foundLine: "Found", momentRemove: "Remove the Moment", momentLegend: "A moment outside", noMood: "No Mood",
     write: "What's on your mind?", tags: "Tags", tagsHint: "walk, family, a good day", addPhotos: "Add Photos", save: "Save", saved: "Saved.", when: "When",
@@ -24,7 +24,7 @@ export const WORDS = {
     skip: "Skip to Content", langSwitch: "PT", langLabel: "PT · Ver em português", themeToggle: "Switch Theme", confirm: "OK",
   },
   pt: {
-    brand: "Quill", tagline: "Um Lugar Calmo para a Mente",
+    brand: "quilldoivo", tagline: "Um Lugar Calmo para a Mente",
     navToday: "Hoje", navPages: "Páginas", navBoards: "Quadros", navBooks: "Livros", navSearch: "Pesquisar", navSettings: "Definições",
     howAreYou: "Como Está?", moods: ["Péssimo", "Em Baixo", "Razoável", "Bem", "Ótimo"], moment: "Um Momento Lá Fora", momentHint: "De volta de um passeio, de respirar ou de estar lá fora? Guarde o momento aqui. O tempo lá fora foi para si, não para o telemóvel.", momentKinds: ["Passeio", "Respirar", "Meditar", "Estar Lá Fora"], momentPlaces: ["Parque", "Praia", "Bosque", "Jardim", "Rua", "Serra"], momentWhat: "O Quê", momentWhere: "Onde", minutes: "Minutos", foundLabel: "Algo Que Encontrei", foundHint: "uma pedra lisa, uma pena…", foundLine: "Encontrei", momentRemove: "Tirar o Momento", momentLegend: "Um momento lá fora", noMood: "Nenhum",
     write: "O que vai na mente?", tags: "Etiquetas", tagsHint: "passeio, família, um bom dia", addPhotos: "Adicionar Fotos", save: "Guardar", saved: "Guardado.", when: "Quando",

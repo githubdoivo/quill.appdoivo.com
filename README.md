@@ -1,6 +1,6 @@
 # quill.appdoivo.com
 
-**Quill** (the same name in EN and PT; it was Journal / Diário until 2026-11-05): "my mind + Notion + a journal app + a notes app". Good on a laptop
+**quilldoivo** (the same name in EN and PT; it was Journal / Diário until 2026-11-05): "my mind + Notion + a journal app + a notes app". Good on a laptop
 and on a phone, installable, works offline. **Everything stays on the device**, photos included:
 no account, no server, no tracking.
 
